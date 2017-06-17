@@ -3,11 +3,14 @@
 import subprocess
 import os
 from flask import Flask, request
+import logging
+
 
 app = Flask(__name__)
 
 # setting 从环境变量里拿到
 WEBHOOK_PASSWORD = os.environ.get('WEBHOOK_PASSWORD')
+print({"WEBHOOK_PASSWORD":WEBHOOK_PASSWORD})
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -23,6 +26,7 @@ def hello_world():
     '''
     r_json = request.get_json()
     print(r_json)
+
     # 判断合法性
     if r_json:
         if r_json.get("hook_name") == "push_hooks" and r_json.get("password") == WEBHOOK_PASSWORD:
@@ -33,7 +37,7 @@ def hello_world():
                              shell=True,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
-            print("run deploy.sh(go on...)")
+            print('run deploy.sh(go on...)')
             return "ok"
     return 'error request!'
 
